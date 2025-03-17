@@ -6,27 +6,50 @@ void error(string word1, string word2, string msg){
 bool edit_distance_within(const std::string& str1, const std::string& str2, int d){
     int m = str1.length();
     int n = str2.length();
-    if(abs(m-n) > d) return false;
 
-    std::vector<int> prev(n + 1), curr(n + 1);
-
-    for (int j = 0; j <= n; ++j) {
-        prev[j] = j;
-    }
-    for (int i = 1; i <= m; ++i) {
-        curr[0] = i;
-
-        for (int j = 1; j <= n; ++j) {
-            if (str1[i - 1] == str2[j - 1]) {
-                curr[j] = prev[j - 1]; 
-            } else {
-                curr[j] = min({prev[j - 1], curr[j - 1], prev[j]}) + 1;
+    int i = 0, j = 0, cost = 0;
+    while(cost <= d && i < m && j < n){
+        if(str1[i] != str2[j]){
+            if(m < n){
+                --i;
             }
+            else if(m > n){
+                --j;
+            }
+            ++cost;
         }
-        if(*min_element(curr.begin(), curr.end()) > d) return false;
-        swap(prev, curr);
+        ++i;
+        ++j;
     }
-    return prev[n] <= d;
+
+    if(i == m){
+        cost += n-j;
+    }
+    else if(j == n){
+        cost += n-i;
+    }
+    return cost <= d;
+    // if(abs(m-n) > d) return false;
+
+    // std::vector<int> prev(n + 1), curr(n + 1);
+
+    // for (int j = 0; j <= n; ++j) {
+    //     prev[j] = j;
+    // }
+    // for (int i = 1; i <= m; ++i) {
+    //     curr[0] = i;
+
+    //     for (int j = 1; j <= n; ++j) {
+    //         if (str1[i - 1] == str2[j - 1]) {
+    //             curr[j] = prev[j - 1]; 
+    //         } else {
+    //             curr[j] = min({prev[j - 1], curr[j - 1], prev[j]}) + 1;
+    //         }
+    //     }
+    //     if(*min_element(curr.begin(), curr.end()) > d) return false;
+    //     swap(prev, curr);
+    // }
+    // return prev[n] <= d;
 }
 bool is_adjacent(const string& word1, const string& word2){
     return edit_distance_within(word1, word2, 1);
