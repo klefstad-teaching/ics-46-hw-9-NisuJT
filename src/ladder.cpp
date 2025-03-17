@@ -4,11 +4,19 @@ void error(string word1, string word2, string msg){
     cout << word1 << ", " << word2 << ": " << msg << endl;
 }
 bool edit_distance_within(const std::string& str1, const std::string& str2, int d){
-    int m = str1.length();
-    int n = str2.length();
+    int m = str1.size();
+    int n = str2.size();
 
     int i = 0, j = 0, cost = 0;
-    while(cost <= d && i < m && j < n){
+    while(cost <= d){
+        if(i >= m){
+            cost += n-j;
+            break;
+        }
+        else if(j >= n){
+            cost += m-i;
+            break;
+        }
         if(str1[i] != str2[j]){
             if(m < n){
                 --i;
@@ -22,12 +30,6 @@ bool edit_distance_within(const std::string& str1, const std::string& str2, int 
         ++j;
     }
 
-    if(i == m){
-        cost += n-j;
-    }
-    else if(j == n){
-        cost += n-i;
-    }
     return cost <= d;
     // if(abs(m-n) > d) return false;
 
@@ -57,7 +59,7 @@ bool is_adjacent(const string& word1, const string& word2){
 
 string lowerCase(const string & input) {
     string result = input;
-    for(char c : input)
+    for(char& c : result)
         c = tolower(c);
     return result;
 }
